@@ -1,13 +1,15 @@
 import { Dispatch, FormEvent, FunctionComponent, SetStateAction, useRef, useState } from "react";
-import { ListItemProps } from "./ListItem";
+import { useListAndInputStore } from "../stores/ListInputStore";
 
-type ListItemInputProps = {
-    forceUpdateCallback: Dispatch<SetStateAction<boolean>>
-}
+type newListItem = {
+    name: string,
+    isComplete: boolean
+    }
 
-export const ListItemInput: FunctionComponent<ListItemInputProps> = ({ forceUpdateCallback }) => {
-    const [newItem, setNewItem] = useState<ListItemProps>();
 
+export const ListItemInput: FunctionComponent = () => {
+    const [newItem, setNewItem] = useState<newListItem>();
+    const { setUpdateList } = useListAndInputStore();
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // avoid page reload
 
@@ -21,12 +23,12 @@ export const ListItemInput: FunctionComponent<ListItemInputProps> = ({ forceUpda
             .then(response => response.json())
             .then(data => console.log("Successfully posted: ", data))
             .then(() => setNewItem(undefined));
-        forceUpdateCallback(true);
+        setUpdateList(true);
 
     }
 
     const insertNewListItem = (name: string) => {
-        const newListItem: ListItemProps = {
+        const newListItem: newListItem = {
             name: name,
             isComplete: false
         }

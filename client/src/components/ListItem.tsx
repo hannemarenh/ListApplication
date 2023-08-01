@@ -4,8 +4,7 @@ import { FunctionComponent, useState } from "react";
 
 // OBS. Sync with server? 
 export type ListItemProps = {
-    name: string;
-    isComplete: boolean;
+    listItem: IListItem
 }
 
 export interface IListItem {
@@ -14,12 +13,12 @@ export interface IListItem {
     isComplete: boolean;
 }
 
-export const ListItem: FunctionComponent<ListItemProps> = ({ name, isComplete }) => {
+export const ListItem: FunctionComponent<ListItemProps> = ({ listItem }) => {
 
     const defaultTextStyle = "px-4"
     const doneTextStyle = defaultTextStyle + " " + "line-through";
 
-    const [done, setDone] = useState(isComplete);
+    const [done, setDone] = useState(listItem.isComplete);
     const [textStyle, setTextStyle] = useState(defaultTextStyle);
 
     const toggleDone = () => {
@@ -30,7 +29,15 @@ export const ListItem: FunctionComponent<ListItemProps> = ({ name, isComplete })
         else {
             setTextStyle(defaultTextStyle);
         }
+
         // Update on server
+        fetch("https://localhost:7193/api/ListItems", {
+            method: "PUT",
+            body: JSON.stringify(listItem.id),
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then((response) => { return response.json() })
+            .then((data) => { console.log(data) })
     }
 
     return (
@@ -55,7 +62,7 @@ export const ListItem: FunctionComponent<ListItemProps> = ({ name, isComplete })
                     />
                 }
             </span>
-            <p className={textStyle}> {name} </p>
+            <p className={textStyle}> {listItem.name} </p>
         </div>
     )
 }

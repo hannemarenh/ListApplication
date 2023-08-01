@@ -1,30 +1,23 @@
-import { Dispatch, FunctionComponent, SetStateAction, useEffect, useState } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
+import { useListAndInputStore } from "../stores/ListInputStore";
 import { IListItem, ListItem } from "./ListItem";
 
-type ListProps = {
-    forceUpdate: boolean,
-    setForceUpdate: Dispatch<SetStateAction<boolean>>
-}
-export const List: FunctionComponent<ListProps> = ({ forceUpdate, setForceUpdate }) => {
+export const List: FunctionComponent = () => {
     const [items, setItems] = useState<Array<IListItem>>([])
 
-    const updateList = fetch("https://localhost:7193/api/ListItems", {
-        method: "GET",
-    })
-        .then((response) => { return response.json() })
-        .then((data) => setItems(data))
+    const { updateList, setUpdateList } = useListAndInputStore();
 
     useEffect(() => {
-        updateList
-    }, [])
+        fetch("https://localhost:7193/api/ListItems", {
+            method: "GET",
+        })
+            .then((response) => { return response.json() })
+            .then((data) => { setUpdateList(false); setItems(data) })
+    }, [updateList])
 
-    if (forceUpdate) {
-        updateList;
-        setForceUpdate(false);
-    }
     return (<>
         {
-            items.map((current: IListItem) => { return (<ListItem key={current.id} name={current.name} isComplete={current.isComplete} />) })
+            items.map((current: IListItem) => { return (<ListItem key={current.id} listItem={current} />) })
         }
     </>)
 }
