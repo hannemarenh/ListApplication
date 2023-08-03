@@ -1,11 +1,13 @@
-import { create }  from "zustand";
+import { create } from "zustand";
+
+type ListStatus = "updated" | "outdated";
 
 type ListAndInputStoreProps = {
-    updateList: boolean,
-    setUpdateList: (newState: boolean) => void;
+    listStatus: ListStatus;
+    setListStatus: (newListStatus: ListStatus) => void
 }
 
 export const useListAndInputStore = create<ListAndInputStoreProps>()((set) => ({
-    updateList: false,
-    setUpdateList: (newState: boolean) => set(({ updateList: newState })),
+    listStatus: "outdated",
+    setListStatus: (newListStatus: ListStatus) => set({ listStatus: newListStatus })
 }))

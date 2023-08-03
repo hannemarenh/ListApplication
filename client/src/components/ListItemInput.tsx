@@ -1,30 +1,26 @@
-import { Dispatch, FormEvent, FunctionComponent, SetStateAction, useRef, useState } from "react";
+import { FormEvent, FunctionComponent, useState } from "react";
+import { postJSON } from "../api";
 import { useListAndInputStore } from "../stores/ListInputStore";
 
 type newListItem = {
     name: string,
     isComplete: boolean
-    }
+}
 
 
 export const ListItemInput: FunctionComponent = () => {
+    const url = "https://localhost:7193/api/ListItems";
     const [newItem, setNewItem] = useState<newListItem>();
-    const { setUpdateList } = useListAndInputStore();
+    const { setListStatus } = useListAndInputStore();
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // avoid page reload
 
-        fetch("https://localhost:7193/api/ListItems", {
-            method: "POST",
-            body: JSON.stringify(newItem),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => response.json())
-            .then(data => console.log("Successfully posted: ", data))
-            .then(() => setNewItem(undefined));
-        setUpdateList(true);
-
+        postJSON(url, JSON.stringify(newItem))
+            .then(data => {
+                setNewItem(undefined);
+                setListStatus("outdated");
+                console.log("Successfully posted: ", data)
+            })
     }
 
     const insertNewListItem = (name: string) => {
@@ -46,7 +42,7 @@ export const ListItemInput: FunctionComponent = () => {
                     value={newItem?.name || ""}
                     className="text-black m-4"
                     autoComplete="off"
-                    autoFocus 
+                    autoFocus
                 />
             </label>
             <button type="submit">Submit</button>

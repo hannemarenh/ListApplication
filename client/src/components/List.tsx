@@ -1,20 +1,20 @@
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useState } from "react";
+import { get } from "../api";
 import { useListAndInputStore } from "../stores/ListInputStore";
 import { IListItem, ListItem } from "./ListItem";
 
 export const List: FunctionComponent = () => {
+    const url = "https://localhost:7193/api/ListItems";
     const [items, setItems] = useState<Array<IListItem>>([])
 
-    const { updateList, setUpdateList } = useListAndInputStore();
+    const { listStatus, setListStatus } = useListAndInputStore();
 
-    useEffect(() => {
-        fetch("https://localhost:7193/api/ListItems", {
-            method: "GET",
-        })
-            .then((response) => { return response.json() })
-            .then((data) => { setUpdateList(false); setItems(data) })
-    }, [updateList])
-
+    if (listStatus === "outdated") {
+        get<IListItem[]>(url).then((res) =>
+            setItems(res)
+        );
+        setListStatus("updated")
+    }
     return (<>
         {
             items.map((current: IListItem) => { return (<ListItem key={current.id} listItem={current} />) })

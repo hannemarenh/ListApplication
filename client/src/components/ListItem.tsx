@@ -1,8 +1,8 @@
-"use client"
 import Image from 'next/image';
 import { FunctionComponent, useState } from "react";
+import { putJSON } from '../api';
+import { useListAndInputStore } from '../stores/ListInputStore';
 
-// OBS. Sync with server? 
 export type ListItemProps = {
     listItem: IListItem
 }
@@ -14,9 +14,11 @@ export interface IListItem {
 }
 
 export const ListItem: FunctionComponent<ListItemProps> = ({ listItem }) => {
+    const url = "https://localhost:7193/api/ListItems/" + listItem.id;
 
     const defaultTextStyle = "px-4"
     const doneTextStyle = defaultTextStyle + " " + "line-through";
+    const { setListStatus } = useListAndInputStore();
 
     const [done, setDone] = useState(listItem.isComplete);
     const [textStyle, setTextStyle] = useState(defaultTextStyle);
@@ -29,15 +31,14 @@ export const ListItem: FunctionComponent<ListItemProps> = ({ listItem }) => {
         else {
             setTextStyle(defaultTextStyle);
         }
+        const updatedItem: IListItem = { ...listItem, isComplete: !done };
 
-        // Update on server
-        fetch("https://localhost:7193/api/ListItems", {
-            method: "PUT",
-            body: JSON.stringify(listItem.id),
-            headers: {'Content-Type': 'application/json'}
-        })
-            .then((response) => { return response.json() })
-            .then((data) => { console.log(data) })
+        putJSON(url, JSON.stringify(updatedItem))
+            .then((response) => {
+                if (response.ok) {
+                    setListStatus("outdated");
+                }
+            })
     }
 
     return (
