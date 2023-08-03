@@ -1,21 +1,23 @@
-"use client"
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useState } from "react";
+import { get } from "../api";
+import { useListAndInputStore } from "../stores/ListInputStore";
 import { IListItem, ListItem } from "./ListItem";
 
 export const List: FunctionComponent = () => {
+    const url = "https://localhost:7193/api/ListItems";
     const [items, setItems] = useState<Array<IListItem>>([])
 
-    useEffect(() => {
-        fetch("https://localhost:7193/api/ListItems", {
-            method: "GET",
-        })
-            .then((response) => { return response.json() })
-            .then((data) => setItems(data))
-    }, [])
+    const { listStatus, setListStatus } = useListAndInputStore();
 
+    if (listStatus === "outdated") {
+        get<IListItem[]>(url).then((res) =>
+            setItems(res)
+        );
+        setListStatus("updated")
+    }
     return (<>
         {
-            items.map((current: IListItem) => { return (<ListItem key={current.id} name={current.name} isComplete={current.isComplete} />) })
+            items.map((current: IListItem) => { return (<ListItem key={current.id} listItem={current} />) })
         }
     </>)
 }

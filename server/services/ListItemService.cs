@@ -14,7 +14,7 @@ namespace server.services
         }
         public List<ListItem> Get()
         {
-            return  _listItems.Find(listItem => true).ToList();
+            return  _listItems.Find(listItem => true).SortBy(listItem => listItem.IsComplete).ToList();
         }
         public ListItem Get(string id)
         {

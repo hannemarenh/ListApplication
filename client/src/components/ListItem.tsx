@@ -1,11 +1,10 @@
-"use client"
 import Image from 'next/image';
 import { FunctionComponent, useState } from "react";
+import { putJSON } from '../api';
+import { useListAndInputStore } from '../stores/ListInputStore';
 
-// OBS. Sync with server? 
 export type ListItemProps = {
-    name: string;
-    isComplete: boolean;
+    listItem: IListItem
 }
 
 export interface IListItem {
@@ -14,12 +13,14 @@ export interface IListItem {
     isComplete: boolean;
 }
 
-export const ListItem: FunctionComponent<ListItemProps> = ({ name, isComplete }) => {
+export const ListItem: FunctionComponent<ListItemProps> = ({ listItem }) => {
+    const url = "https://localhost:7193/api/ListItems/" + listItem.id;
 
     const defaultTextStyle = "px-4"
     const doneTextStyle = defaultTextStyle + " " + "line-through";
+    const { setListStatus } = useListAndInputStore();
 
-    const [done, setDone] = useState(isComplete);
+    const [done, setDone] = useState(listItem.isComplete);
     const [textStyle, setTextStyle] = useState(defaultTextStyle);
 
     const toggleDone = () => {
@@ -30,7 +31,14 @@ export const ListItem: FunctionComponent<ListItemProps> = ({ name, isComplete })
         else {
             setTextStyle(defaultTextStyle);
         }
-        // Update on server
+        const updatedItem: IListItem = { ...listItem, isComplete: !done };
+
+        putJSON(url, JSON.stringify(updatedItem))
+            .then((response) => {
+                if (response.ok) {
+                    setListStatus("outdated");
+                }
+            })
     }
 
     return (
@@ -55,7 +63,7 @@ export const ListItem: FunctionComponent<ListItemProps> = ({ name, isComplete })
                     />
                 }
             </span>
-            <p className={textStyle}> {name} </p>
+            <p className={textStyle}> {listItem.name} </p>
         </div>
     )
 }
