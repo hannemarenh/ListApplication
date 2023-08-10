@@ -10,7 +10,7 @@ export const List: FunctionComponent = () => {
     const { listStatus, setListStatus } = useListAndInputStore();
 
     if (listStatus === "outdated") {
-        get<IListItem[]>(url).then((res) =>
+        get<IListItem[]>(url).then((res: IListItem[]) =>
             setItems(res)
         );
         setListStatus("updated")

@@ -16,10 +16,9 @@ export const ListItemInput: FunctionComponent = () => {
         e.preventDefault(); // avoid page reload
 
         postJSON(url, JSON.stringify(newItem))
-            .then(data => {
+            .then(() => {
                 setNewItem(undefined);
                 setListStatus("outdated");
-                console.log("Successfully posted: ", data)
             })
     }
 

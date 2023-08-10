@@ -33,6 +33,14 @@ namespace server.services
         {
             _listItems.DeleteOne(listItem => listItem.Id == id);
         }
+        public void RemoveCompleted()
+        {
+            _listItems.DeleteMany(listItem => listItem.IsComplete);
+        }
+        public void RemoveAll()
+        {
+            _listItems.DeleteMany(listItem => true);
+        }
 
     }
 }

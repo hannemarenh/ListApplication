@@ -27,7 +27,7 @@ namespace server.Controllers
         public ActionResult<ListItem> Get(string id)
         {
             var listItem = listItemService.Get(id);
-            if(listItem == null)
+            if (listItem == null)
             {
                 return NotFound($"List item with Id = {id} was not found");
             }
@@ -40,7 +40,7 @@ namespace server.Controllers
         public ActionResult Put([FromBody] ListItem listItem)
         {
             var existingListItem = listItemService.Get(listItem.Id);
-            if(existingListItem == null)
+            if (existingListItem == null)
             {
                 return NotFound($"List item with name = {listItem.Name} was not found");
             }
@@ -64,6 +64,23 @@ namespace server.Controllers
         {
             listItemService.Remove(id);
             return Ok($"List item with Id = {id} was deleted");
+        }
+        
+
+        // DELETE: api/ListItems?completed=true
+        [HttpDelete]
+        public ActionResult Delete(bool completedOnly=true)
+        {
+            if (completedOnly)
+            {
+                listItemService.RemoveCompleted();
+                return Ok($"All list items was deleted");
+            }
+            else
+            {
+                listItemService.RemoveAll();
+                return Ok($"All list items was deleted");
+            }
         }
     }
 }

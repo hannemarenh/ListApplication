@@ -9,6 +9,8 @@ namespace server.services
         ListItem Create(ListItem item);
         void Update(string id, ListItem item);
         void Remove(string id);
+        void RemoveCompleted();
+        void RemoveAll();
 
     }
 }
