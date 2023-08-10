@@ -65,10 +65,11 @@ namespace server.Controllers
             listItemService.Remove(id);
             return Ok($"List item with Id = {id} was deleted");
         }
+        
 
-        // DELETE: api/ListItems
-        [HttpDelete("{completedOnly}")]
-        public ActionResult Delete(bool completedOnly = true)
+        // DELETE: api/ListItems?completed=true
+        [HttpDelete]
+        public ActionResult Delete(bool completedOnly=true)
         {
             if (completedOnly)
             {
@@ -81,6 +82,5 @@ namespace server.Controllers
                 return Ok($"All list items was deleted");
             }
         }
-
     }
 }
