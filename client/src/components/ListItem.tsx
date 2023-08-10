@@ -42,7 +42,11 @@ export const ListItem: FunctionComponent<ListItemProps> = ({ listItem }) => {
     }
 
     return (
-        <div onClick={toggleDone} className="flex m-4">
+        <div
+            onClick={toggleDone}
+            className="flex m-4"
+        >
+
             <span>
                 {done ?
                     <Image
@@ -63,7 +67,9 @@ export const ListItem: FunctionComponent<ListItemProps> = ({ listItem }) => {
                     />
                 }
             </span>
+            <div className={"flex align-baseline" }>
             <p className={textStyle}> {listItem.name} </p>
+            </div>
         </div>
     )
 }

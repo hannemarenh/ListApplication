@@ -11,6 +11,23 @@ export async function get<T>(url: string): Promise<T> {
 }
 
 
+export async function deleteListItems<T>(url: string) {
+    return await fetch(url, {
+        method: "DELETE",
+    })
+        .then((res) => {
+            if (res.ok) {
+                return res
+            }
+            else {
+                console.error(res);
+                throw res;
+            }
+        });
+
+}
+
+
 export async function postJSON<T>(url: string, body?: string): Promise<T> {
     return await internalPOST(url, body, {
         Accept: "application/json",
