@@ -9,12 +9,12 @@ export const ListAndInputWrapper: FunctionComponent = () => {
     // Add title for list here. May be we have multiple lists. In that case this is the wrapper :-) 
 
     return (
-        <>
+        <div>
             <ListItemInput />
             <List />
             <span>
                 <DeleteManyButton deleteAll={false} />
                 <DeleteManyButton deleteAll={true} />
             </span>
-        </>)
+        </div>)
 }
